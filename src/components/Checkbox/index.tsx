@@ -1,23 +1,19 @@
+import { Field } from "formik";
 import { useId } from "react";
 import { Container } from "./styles";
 
 interface CheckboxProps {
+  name: string;
   label: string;
-  handleChange: () => void;
-  checked: boolean;
+  checked?: boolean;
 }
 
-function Checkbox({ label, handleChange, checked = false }: CheckboxProps) {
+function Checkbox({ name, label, checked }: CheckboxProps) {
   const id = useId();
 
   return (
     <Container>
-      <input
-        id={id}
-        checked={checked}
-        onChange={handleChange}
-        type="checkbox"
-      ></input>
+      <Field id={id} name={name} type="checkbox" checked={checked} />
       <label htmlFor={id}>{label}</label>
     </Container>
   );

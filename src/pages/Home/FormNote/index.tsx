@@ -1,13 +1,14 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  FormEventHandler,
-  useCallback,
-  useState,
-} from "react";
+import {
+  ErrorMessage,
+  Field,
+  Formik,
+  FormikErrors,
+  FormikHelpers,
+} from "formik";
 import Button from "../../../components/Button";
 import Checkbox from "../../../components/Checkbox";
 import { Form } from "./styles";
+import * as Yup from "yup";
 
 export interface FormValueState {
   text: string;
@@ -15,42 +16,44 @@ export interface FormValueState {
 }
 
 interface FormNoteProps {
-  handleSubmit: (payload: FormValueState) => void;
+  handleSubmit: (
+    payload: FormValueState,
+    actions: FormikHelpers<FormValueState>
+  ) => void;
 }
 
 function FormNote({ handleSubmit }: FormNoteProps) {
-  const [formValues, setFormValues] = useState<FormValueState>({
+  const initialValues: FormValueState = {
     text: "",
     urgent: false,
-  });
-
-  const handleChangeUrgent = useCallback(() => {
-    setFormValues((prevState) => ({ ...prevState, urgent: !prevState.urgent }));
-  }, [setFormValues]);
-
-  const handleInput = (event: ChangeEvent<HTMLTextAreaElement>) =>
-    setFormValues({ ...formValues, text: event.target.value });
-
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    handleSubmit(formValues);
   };
 
   return (
-    <Form onSubmit={onSubmit}>
-      <textarea
-        value={formValues.text}
-        onChange={handleInput}
-        autoFocus
-        placeholder="Insira o texto da nota"
-      />
-      <Checkbox
-        checked={formValues.urgent}
-        handleChange={handleChangeUrgent}
-        label="Urgente?"
-      />
-      <Button handleClick={() => {}}>Salvar</Button>
-    </Form>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={Yup.object({
+        text: Yup.string()
+          .min(5, "Deve ter pelo menos 5 caracteres")
+          .required("Campo obrigatório"),
+      })}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form>
+          <Field
+            as="textarea"
+            name="text"
+            autoFocus
+            placeholder="Insira o texto da nota"
+          />
+          <ErrorMessage name="text" />
+          <Checkbox name="urgent" label="Urgente?" />
+          <Button handleClick={() => {}} disabled={isSubmitting}>
+            {isSubmitting ? "Salvando..." : "Salvar"}
+          </Button>
+        </Form>
+      )}
+    </Formik>
   );
 }
 

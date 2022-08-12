@@ -1,14 +1,8 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  FormEventHandler,
-  useCallback,
-  useState,
-} from "react";
 import { Link } from "react-router-dom";
 import Button from "../../../components/Button";
-import Checkbox from "../../../components/Checkbox";
 import { Form } from "./styles";
+import * as Yup from "yup";
+import { ErrorMessage, Field, Formik } from "formik";
 
 export interface FormValueState {
   username: string;
@@ -20,40 +14,33 @@ interface FormLoginProps {
 }
 
 function FormLogin({ handleSubmit }: FormLoginProps) {
-  const [formValues, setFormValues] = useState<FormValueState>({
+  const initialValues: FormValueState = {
     username: "",
     password: "",
-  });
-
-  const handleInput = (event: ChangeEvent<HTMLInputElement>) =>
-    setFormValues({ ...formValues, [event.target.id]: event.target.value });
-
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    handleSubmit(formValues);
   };
 
   return (
-    <Form onSubmit={onSubmit}>
-      <h1>Login</h1>
-      <input type="text"
-        id="username"
-        value={formValues.username}
-        onChange={handleInput}
-        autoFocus
-        placeholder="Insira seu usuário"
-      />
-      <input type="password"
-        id="password"
-        value={formValues.password}
-        onChange={handleInput}
-        autoFocus
-        placeholder="Insira sua senha"
-      />
-      
-      <Button handleClick={() => {}}>Entrar</Button>
-      <Link to="/register">Register</Link>
-    </Form>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={Yup.object({
+        username: Yup.string()
+          .min(5, "Deve ter pelo menos 5 caracteres")
+          .required("Campo obrigatório"),
+        password: Yup.string()
+          .required("Campo obrigatório")
+      })}
+      onSubmit={handleSubmit}
+    >
+      <Form>
+        <h1>Login</h1>
+        <Field name="username" autoFocus placeholder="Insira seu usuário" />
+        <ErrorMessage component="span" className="input-error" name="username" />
+        <Field type="password" name="password" placeholder="Insira sua senha" />
+        <ErrorMessage component="span" className="input-error" name="password" />
+        <Button>Entrar</Button>
+        <Link to="/register">Register</Link>
+      </Form>
+    </Formik>
   );
 }
 

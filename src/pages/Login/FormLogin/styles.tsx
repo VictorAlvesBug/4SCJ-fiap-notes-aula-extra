@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components";
+import { Form as FormikForm } from "formik";
 
 const fadeIn = keyframes`
   from {
@@ -10,18 +11,17 @@ const fadeIn = keyframes`
   }
 `;
 
-export const Form = styled.form`
+export const Form = styled(FormikForm)`
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
-  
+
   border-radius: 10px;
   background-color: var(--bgPrimary);
-  box-shadow: 0px 4px 10px var(--bgPrimary),
-              0px 10px 40px var(--bgPrimary);
+  box-shadow: 0px 4px 10px var(--bgPrimary), 0px 10px 40px var(--bgPrimary);
 
-  animation: ${fadeIn} .3s;
+  animation: ${fadeIn} 0.3s;
 
   h1 {
     align-self: center;
@@ -32,7 +32,7 @@ export const Form = styled.form`
     color: var(--white);
     align-self: center;
 
-    :hover{
+    :hover {
       color: var(--primary);
     }
   }

@@ -71,4 +71,10 @@ export const GlobalStyles = createGlobalStyle`
     height: 20px;
   }
 
+  span.input-error {
+    font-size: 12px;
+    margin-top: -5px;
+    color: var(--primary);
+  }
+
 `;

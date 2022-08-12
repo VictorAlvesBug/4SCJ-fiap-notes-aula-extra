@@ -18,7 +18,7 @@ export const FabButtonStyled = styled.button<PropsFab>`
   width: 25px;
   height: 25px;
   border-radius: 25px;
-  border: 0px;
+  border: 2px solid var(--primary);
 
   box-shadow: 2px 4px 4px #0009;
   transition: 0.2s;

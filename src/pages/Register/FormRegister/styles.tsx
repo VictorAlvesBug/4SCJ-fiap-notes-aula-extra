@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components";
+import { Form as FormikForm } from "formik";
 
 const fadeIn = keyframes`
   from {
@@ -11,7 +12,7 @@ const fadeIn = keyframes`
   }
 `;
 
-export const Form = styled.form`
+export const Form = styled(FormikForm)`
   display: flex;
   flex-direction: column;
   gap: 10px;

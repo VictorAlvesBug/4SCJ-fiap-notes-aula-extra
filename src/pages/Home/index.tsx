@@ -9,6 +9,7 @@ import { Container } from "./styles";
 import { Context } from "../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
+import { FormikHelpers } from "formik";
 
 function Home() {
   const { handleLogout, authenticated } = useContext(Context);
@@ -27,12 +28,12 @@ function Home() {
   }, []);
 
   const createNote = useCallback(
-    (payload: FormValueState) => {
+    (values: FormValueState, actions: FormikHelpers<FormValueState>) => {
       (async () => {
-        const response = await NotesService.postNotes(payload);
-
+        const response = await NotesService.postNotes(values);
         setNotes((prevState) => [...prevState, response.data]);
 
+        actions.setSubmitting(false);
         setShowModal(false);
       })();
     },
@@ -65,7 +66,11 @@ function Home() {
       )}
       <Container>
         {notes.map((note) => (
-          <CardNote key={note.id} handleDelete={deleteNote} note={note}></CardNote>
+          <CardNote
+            key={note.id}
+            handleDelete={deleteNote}
+            note={note}
+          ></CardNote>
         ))}
         <FabButton position="left" handleClick={() => setShowModal(true)}>
           +

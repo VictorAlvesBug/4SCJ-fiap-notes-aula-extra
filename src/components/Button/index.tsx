@@ -1,12 +1,13 @@
+import { ButtonHTMLAttributes } from "react";
 import { ButtonStyled } from "./styles";
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  handleClick: () => void;
+  handleClick?: () => void;
 }
 
-function Button({ children, handleClick }: ButtonProps) {
-  return <ButtonStyled onClick={handleClick}>{children}</ButtonStyled>;
+function Button({ children, handleClick, ...rest }: ButtonProps) {
+  return <ButtonStyled {...rest} onClick={handleClick}>{children}</ButtonStyled>;
 }
 
 export default Button;
