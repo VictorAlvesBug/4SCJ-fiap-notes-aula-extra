@@ -1,147 +1,79 @@
-import { FormEvent, useEffect, useState } from "react";
-// import Modal from "../../components/Modal";
+import { useCallback, useContext, useEffect, useState } from "react";
+import CardNote from "../../components/CardNote";
+import FabButton from "../../components/FabButton";
+import FormNote, { FormValueState } from "./FormNote";
+import Modal from "../../components/Modal";
 import { NotesService } from "../../services/notes/note-service";
-import { ContainerFooter, ContainerNotes } from "./styles";
 import { Note } from "../../services/notes/types";
-
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-
-import Container from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
-
-import Card from "react-bootstrap/Card";
-import { formatDate } from "../../services/utils";
-import { Placeholder } from "react-bootstrap";
-
-import Form from "react-bootstrap/Form";
+import { Container } from "./styles";
+import { Context } from "../../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading";
 
 function Home() {
+  const { handleLogout, authenticated } = useContext(Context);
   const [notes, setNotes] = useState<Note[]>([] as Note[]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
       const response = await NotesService.getNotes();
 
       setNotes(response.data);
-      setIsLoading(false);
+      setLoading(false);
     })();
   }, []);
 
-  const [show, setShow] = useState(false);
+  const createNote = useCallback(
+    (payload: FormValueState) => {
+      (async () => {
+        const response = await NotesService.postNotes(payload);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+        setNotes((prevState) => [...prevState, response.data]);
 
-  const [validated, setValidated] = useState(false);
+        setShowModal(false);
+      })();
+    },
+    [notes]
+  );
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  const deleteNote = useCallback((id: number) => {
+    (async () => {
+      await NotesService.deleteNote({ id });
 
-    setValidated(true);
-  };
+      setNotes((prevState) => prevState.filter((note) => note.id !== id));
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!authenticated) navigate("/");
+  }, [authenticated]);
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="text">
-              <Form.Label>Nota</Form.Label>
-              <Form.Control
-                required
-                type="email"
-                placeholder="Digite o texto da nota"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe um texto para a nota
-              </Form.Control.Feedback>
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-              <Form.Text className="text-muted">
-                Precisa ter no mínimo 5 caractéres
-              </Form.Text>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Form.Check type="checkbox" label="Urgent" />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Salvar
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
-      <Navbar bg="light" expand="lg">
-        <Container fluid>
-          <Navbar.Brand href="#home">Fiap-Notes</Navbar.Brand>
-
-          <Button onClick={() => handleShow()}>Nova Nota</Button>
-        </Container>
-      </Navbar>
-      <ContainerNotes fluid>
-        {isLoading ? (
-          <>
-            <Card style={{ width: "18rem" }}>
-              <Card.Header>
-                <Placeholder as={Card.Subtitle} animation="glow">
-                  <Placeholder xs={6} />
-                </Placeholder>
-              </Card.Header>
-              <Card.Body>
-                <Placeholder as={Card.Text} animation="glow">
-                  <Placeholder xs={7} /> <Placeholder xs={4} />{" "}
-                </Placeholder>
-              </Card.Body>
-              <ContainerFooter>
-                <Placeholder xs={7} /> <Placeholder xs={4} />{" "}
-              </ContainerFooter>
-            </Card>
-            <Card style={{ width: "18rem" }}>
-              <Card.Header>
-                <Placeholder as={Card.Subtitle} animation="glow">
-                  <Placeholder xs={6} />
-                </Placeholder>
-              </Card.Header>
-              <Card.Body>
-                <Placeholder as={Card.Text} animation="glow">
-                  <Placeholder xs={7} /> <Placeholder xs={4} />{" "}
-                </Placeholder>
-              </Card.Body>
-              <ContainerFooter>
-                <Placeholder xs={7} /> <Placeholder xs={4} />{" "}
-              </ContainerFooter>
-            </Card>
-          </>
-        ) : (
-          notes.map((note) => (
-            <Card style={{ width: "18rem" }}>
-              <Card.Header>
-                <Card.Subtitle>
-                  {formatDate(new Date(note?.date))}
-                </Card.Subtitle>
-              </Card.Header>
-              <Card.Body>
-                <Card.Text>{note.text}</Card.Text>
-              </Card.Body>
-              <ContainerFooter>
-                {note.urgent && (
-                  <span className="material-icons" id="priority">
-                    priority_high
-                  </span>
-                )}
-                <span className="material-icons"> delete_forever </span>
-              </ContainerFooter>
-            </Card>
-          ))
-        )}
-      </ContainerNotes>
+      {loading && <Loading />}
+      {showModal && (
+        <Modal
+          title="Nova nota"
+          handleClose={() => setShowModal(false)}
+          style={{ width: "100px" }}
+        >
+          <FormNote handleSubmit={createNote} />
+        </Modal>
+      )}
+      <Container>
+        {notes.map((note) => (
+          <CardNote key={note.id} handleDelete={deleteNote} note={note}></CardNote>
+        ))}
+        <FabButton position="left" handleClick={() => setShowModal(true)}>
+          +
+        </FabButton>
+        <FabButton position="right" handleClick={handleLogout}>
+          <span className="material-icons">logout</span>
+        </FabButton>
+      </Container>
     </>
   );
 }
