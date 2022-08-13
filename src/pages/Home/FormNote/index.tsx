@@ -46,8 +46,6 @@ function FormNote({
         urgent: false,
       };
 
-console.log(noteToEdit)
-
   const handleSubmit = noteToEdit
     ? handleSubmitEditNote
     : handleSubmitNewNote;

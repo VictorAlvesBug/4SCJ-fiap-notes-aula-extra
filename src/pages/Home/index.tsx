@@ -10,6 +10,7 @@ import { Context } from '../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import { FormikHelpers } from 'formik';
+import Header, { sortOption } from '../../components/Header';
 
 function Home() {
   // Recupera função de deslogar e status de autenticação do contexto
@@ -54,7 +55,7 @@ function Home() {
   const editNote = useCallback(
     (values: FormValueState, actions: FormikHelpers<FormValueState>) => {
       (async () => {
-        const response = await NotesService.putNote(values);
+        await NotesService.putNote(values);
         setNotes((prevState) =>
           prevState.map((note) => {
             if (note.id === values.id) {
@@ -92,6 +93,52 @@ function Home() {
     })();
   }, []);
 
+  // Função de callback para ordenar as notas de acordo com a ordem selecionada.
+  const sortNotes = useCallback((selectedSortOption: number) => {
+    (async () => {
+    setNotes((prevState) => {
+      switch (selectedSortOption) {
+        case sortOption.alphaAZ:
+          prevState = prevState.sort((noteA, noteB) => {
+            const textA = noteA.text;
+            const textB = noteB.text;
+            return textA < textB ? -1 : textA > textB ? 1 : 0;
+          });
+          break;
+          case sortOption.alphaZA:
+            prevState = prevState.sort((noteA, noteB) => {
+              const textA = noteA.text;
+              const textB = noteB.text;
+              return textA < textB ? 1 : textA > textB ? -1 : 0;
+            });
+            break;
+
+            case sortOption.urgentFirst:
+              prevState = prevState.sort((noteA, noteB) => {
+                const urgentA = noteA.urgent;
+                const urgentB = noteB.urgent;
+                return urgentA && !urgentB ? -1 : !urgentA && urgentB ? 1 : 0;
+              });
+              break;
+
+              case sortOption.urgentLast:
+                prevState = prevState.sort((noteA, noteB) => {
+                  const urgentA = noteA.urgent;
+                  const urgentB = noteB.urgent;
+                  return urgentA && !urgentB ? 1 : !urgentA && urgentB ? -1 : 0;
+                });
+                break;
+
+        default:
+          prevState = prevState.sort((noteA, noteB) => noteA.id - noteB.id);
+          break;
+      }
+      
+      return prevState;
+    });
+  })();
+  }, []);
+
   // Na primeira renderização e sempre que a variável 'authenticated' mudar de
   // valor, verifica se está autenticado e caso não esteja redireciona para o
   // Login.
@@ -126,6 +173,7 @@ function Home() {
         </Modal>
       )}
       <Container>
+        <Header handleSort={sortNotes} />
         {notes.map((note) => (
           <CardNote
             key={note.id}
