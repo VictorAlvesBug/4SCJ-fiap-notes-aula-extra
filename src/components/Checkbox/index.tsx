@@ -5,15 +5,15 @@ import { Container } from "./styles";
 interface CheckboxProps {
   name: string;
   label: string;
-  checked?: boolean;
+  value?: boolean;
 }
 
-function Checkbox({ name, label, checked }: CheckboxProps) {
+function Checkbox({ name, label, value }: CheckboxProps) {
   const id = useId();
-
+  
   return (
     <Container>
-      <Field id={id} name={name} type="checkbox" checked={checked} />
+      <Field id={id} name={name} type="checkbox" checked={value} />
       <label htmlFor={id}>{label}</label>
     </Container>
   );

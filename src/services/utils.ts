@@ -1,6 +1,6 @@
 const options: Intl.DateTimeFormatOptions = {
   dateStyle: "short",
-  timeStyle: "medium"
+  timeStyle: "short"
 };
 
 export const formatDate = (date: Date) =>

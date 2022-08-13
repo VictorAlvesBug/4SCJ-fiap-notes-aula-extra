@@ -29,8 +29,16 @@ function PrivateRoute({ authenticated }: PrivateRouteProps) {
 }
 
 function AppRoutes() {
+  // Recupera o status de autenticação do contexto previamente salvo no arquivo: 
+  // 'AuthContext.tsx' 
   const { authenticated } = useContext(Context);
 
+  // Inclui as rotas:
+  // - Login "/"
+  // - Register "register" 
+  // - Rota Principal "home" (só é renderizada se o usuário estiver autenticado)
+
+  // Cada uma das rotas possui o element que será renderizado ao acessá-la.
   return (
     <BrowserRouter>
       <Routes>

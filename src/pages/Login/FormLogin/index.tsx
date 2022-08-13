@@ -14,11 +14,14 @@ interface FormLoginProps {
 }
 
 function FormLogin({ handleSubmit }: FormLoginProps) {
+  // Define os valores iniciais dos campos de usuário e senha como vazios
   const initialValues: FormValueState = {
     username: "",
     password: "",
   };
 
+  // Renderiza Formik, passando valores iniciais e função de logar por argumento.
+  // O Yup é responsável pela validação dos campos do formulário.
   return (
     <Formik
       initialValues={initialValues}

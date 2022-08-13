@@ -12,8 +12,8 @@ const fadeIn = keyframes`
 `;
 
 export const Container = styled.article`
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 250px;
   padding: 10px;
   position: relative;
 
@@ -29,8 +29,14 @@ export const Container = styled.article`
     color: var(--gray);
   }
 
+  p.note-text{
+    background-color: #ef6894;
+    height: 72%;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
   .material-icons {
-    position: absolute;
     bottom: 5px;
     right: 5px;
 
@@ -43,6 +49,20 @@ export const Container = styled.article`
     color: #333;
     transform: scale(1.1);
     transform: rotate(360deg);
+  }
+
+  .priority-note{
+    position: absolute;
+  }
+
+  .actions-container{
+    display: flex;
+    justify-content: flex-end;
+    padding: 5px 0;
+  }
+
+  .edit-note{
+
   }
 
   #priority {

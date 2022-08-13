@@ -11,4 +11,11 @@ export const Form = styled(FormikForm)`
     height: 150px;
     resize: unset;
   }
+
+  .note-text{
+    background-color: #ef6894;
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
 `;

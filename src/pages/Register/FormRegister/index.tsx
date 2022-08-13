@@ -14,11 +14,15 @@ interface FormRegisterProps {
 }
 
 function FormRegister({ handleSubmit }: FormRegisterProps) {
+  // Define os valores iniciais dos campos de usuário e senha como vazios
   const initialValues: FormValueState = {
     username: "",
     password: "",
   };
 
+  // Renderiza Formik, passando valores iniciais e função de logar por argumento.
+  // Diferentemente do Login, no Register a validação do form é criada em outro 
+  // arquivo e importada para ser utilizada no Formik (também usando Yup)
   return (
     <Formik
       initialValues={initialValues}
