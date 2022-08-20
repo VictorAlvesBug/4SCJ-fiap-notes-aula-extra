@@ -13,7 +13,7 @@ function Checkbox({ name, label, value }: CheckboxProps) {
   
   return (
     <Container>
-      <Field id={id} name={name} type="checkbox" checked={value} />
+      <Field id={id} name={name} type="checkbox" />
       <label htmlFor={id}>{label}</label>
     </Container>
   );

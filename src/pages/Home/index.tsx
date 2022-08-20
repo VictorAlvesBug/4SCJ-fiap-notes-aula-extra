@@ -134,6 +134,12 @@ function Home() {
           break;
       }
       
+      setNotes((prevState) =>
+        prevState.map((note) => {
+          return note;
+        })
+      );
+
       return prevState;
     });
   })();

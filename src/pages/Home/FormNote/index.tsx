@@ -72,7 +72,7 @@ function FormNote({
             className="note-text"
           />
           <ErrorMessage name="text" />
-          <Checkbox name="urgent" label="Urgente?" />
+          <Checkbox name="urgent" label="Urgente?" value = {noteToEdit?.urgent}/>
           <Button handleClick={() => {}} disabled={isSubmitting} type="submit">
             {isSubmitting ? 'Salvando...' : 'Salvar'}
           </Button>
