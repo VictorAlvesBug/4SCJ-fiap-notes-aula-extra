@@ -1,8 +1,8 @@
 import styled, { keyframes } from 'styled-components';
 
-const slideDown = keyframes`
+const grow = keyframes`
   0% {
-        transform: translateY(-50px) scale(0);
+        transform: scale(0);
     }
 `;
 
@@ -31,7 +31,7 @@ export const Spinner = styled.div`
   top: 20px;
   z-index: 9;
 
-  animation: ${slideDown} 0.4s;
+  animation: ${grow} 0.4s;
 
   border-radius: 50%;
 
