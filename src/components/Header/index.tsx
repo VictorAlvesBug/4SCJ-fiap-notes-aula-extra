@@ -22,6 +22,7 @@ function Header({ handleSort }: HeaderProps) {
       if (prevState === selectedSortOption) {
         selectedSortOption++;
       }
+      // A execução da linha abaixo está causando um erro no console
       handleSort(selectedSortOption);
       return selectedSortOption;
     });
@@ -61,6 +62,7 @@ function Header({ handleSort }: HeaderProps) {
       >
         <span className="material-icons">sort_by_alpha</span>
       </SortOption>
+
       <SortOption
         selected={selectedUrgent()}
         handleClick={() => {
@@ -69,6 +71,7 @@ function Header({ handleSort }: HeaderProps) {
       >
         <span className="material-icons">error_outline</span>
       </SortOption>
+
     </HeaderStyled>
   );
 }

@@ -1,13 +1,29 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 interface PropsFab {
-  position: string;
+  positionVertically: string;
+  positionHorizontally: string;
 }
 
 export const FabButtonStyled = styled.button<PropsFab>`
   position: absolute;
-  ${(props) => (props.position === "left" ? "left: 5px;" : "right: 5px;")}
-  top: 5px;
+  
+  ${(props) => {
+    const posicoesPermitidas = ['top', 'bottom'];
+    if (posicoesPermitidas.includes(props.positionVertically)) {
+      return `${props.positionVertically}: 10px;`;
+    }
+    return '';
+  }}
+
+  ${(props) => {
+    const posicoesPermitidas = ['left', 'right'];
+    if (posicoesPermitidas.includes(props.positionHorizontally)) {
+      return `${props.positionHorizontally}: 10px;`;
+    }
+    return '';
+  }}
+
   color: white;
 
   background-color: transparent;
@@ -15,9 +31,9 @@ export const FabButtonStyled = styled.button<PropsFab>`
   font-size: 15px;
   font-weight: bold;
 
-  width: 25px;
-  height: 25px;
-  border-radius: 25px;
+  width: 35px;
+  height: 35px;
+  border-radius: 20px;
   border: 2px solid var(--primary);
 
   box-shadow: 2px 4px 4px #0009;
@@ -29,7 +45,6 @@ export const FabButtonStyled = styled.button<PropsFab>`
     color: var(--white);
     background-color: #ed145b;
     box-shadow: 2px 10px 10px #0009;
-    ${(props) => (props.position === "left" ? "transform: scale(2) translateX(5px) translateY(5px);" : "transform: scale(2) translateX(-5px) translateY(5px);")}
   }
 
   span {

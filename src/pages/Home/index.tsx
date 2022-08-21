@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import { FormikHelpers } from 'formik';
 import Header, { sortOption } from '../../components/Header';
-import EmptyList from '../../components/EmptyList';
 
 function Home() {
   // Recupera função de deslogar e status de autenticação do contexto
@@ -23,7 +22,6 @@ function Home() {
   const [notes, setNotes] = useState<Note[]>([] as Note[]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [emptyList, setEmptyList] = useState(true);
   const navigate = useNavigate();
 
   // Na primeira renderização, de forma assíncrona, recupera as notas da api,
@@ -34,7 +32,6 @@ function Home() {
 
       setNotes(response.data);
       setLoading(false);
-      setEmptyList(response.data.length === 0);
     })();
   }, []);
 
@@ -102,14 +99,14 @@ function Home() {
       setNotes((prevState) => {
         switch (selectedSortOption) {
           case sortOption.alphaAZ:
-            prevState = prevState.sort((noteA, noteB) => {
+            prevState.sort((noteA, noteB) => {
               const textA = noteA.text;
               const textB = noteB.text;
               return textA < textB ? -1 : textA > textB ? 1 : 0;
             });
             break;
           case sortOption.alphaZA:
-            prevState = prevState.sort((noteA, noteB) => {
+            prevState.sort((noteA, noteB) => {
               const textA = noteA.text;
               const textB = noteB.text;
               return textA < textB ? 1 : textA > textB ? -1 : 0;
@@ -117,7 +114,7 @@ function Home() {
             break;
 
           case sortOption.urgentFirst:
-            prevState = prevState.sort((noteA, noteB) => {
+            prevState.sort((noteA, noteB) => {
               const urgentA = noteA.urgent;
               const urgentB = noteB.urgent;
               return urgentA && !urgentB ? -1 : !urgentA && urgentB ? 1 : 0;
@@ -125,7 +122,7 @@ function Home() {
             break;
 
           case sortOption.urgentLast:
-            prevState = prevState.sort((noteA, noteB) => {
+            prevState.sort((noteA, noteB) => {
               const urgentA = noteA.urgent;
               const urgentB = noteB.urgent;
               return urgentA && !urgentB ? 1 : !urgentA && urgentB ? -1 : 0;
@@ -133,15 +130,11 @@ function Home() {
             break;
 
           default:
-            prevState = prevState.sort((noteA, noteB) => noteA.id - noteB.id);
+            prevState.sort((noteA, noteB) => noteA.id - noteB.id);
             break;
         }
 
-        setNotes((prevState) =>
-          prevState.map((note) => {
-            return note;
-          })
-        );
+        prevState = prevState.map((note) => note)
 
         return prevState;
       });
@@ -163,48 +156,9 @@ function Home() {
   // - Botão flutuante de adicionar uma nota, que abre o modal de cadastro.
   // - Botão flutuante de deslogar.
 
-  let telaExibir;
-
-  if (loading) {
-    telaExibir = 'loading';
-  } else if (emptyList) {
-    telaExibir = 'emptyList';
-  } else {
-    telaExibir = 'notesList';
-  }
-
   return (
     <>
-      {telaExibir === 'loading' && <Loading />}
-      {telaExibir === 'emptyList' && <EmptyList />}
-      {telaExibir !== 'loading' && (
-        <Container>
-          <Header handleSort={sortNotes} />
-      {telaExibir === 'notesList' && 
-          notes.map((note) => (
-            <CardNote
-              key={note.id}
-              handleEdit={openModalWithNoteToEdit}
-              handleDelete={deleteNote}
-              note={note}
-            ></CardNote>
-          )
-      )}
-          <FabButton
-            position="left"
-            handleClick={() => {
-              setShowModal(true);
-              setNoteToEdit(undefined);
-              setIsEditingNote(false);
-            }}
-          >
-            +
-          </FabButton>
-          <FabButton position="right" handleClick={handleLogout}>
-            <span className="material-icons">logout</span>
-          </FabButton>
-        </Container>
-      )}
+      {loading && <Loading />}
       {showModal && (
         <Modal
           titleNewNote="Nova nota"
@@ -220,6 +174,36 @@ function Home() {
           />
         </Modal>
       )}
+      <Container>
+          <Header handleSort={sortNotes} />
+          <div className="card-list">
+      {notes.map((note) => (
+        <CardNote
+        key={note.id}
+        handleEdit={openModalWithNoteToEdit}
+        handleDelete={deleteNote}
+        note={note}
+        ></CardNote>
+        ))}
+        </div>
+          <FabButton
+            positionHorizontally="left"
+            positionVertically="top"
+            handleClick={() => {
+              setShowModal(true);
+              setNoteToEdit(undefined);
+              setIsEditingNote(false);
+            }}
+          >
+            +
+          </FabButton>
+          <FabButton
+            positionHorizontally="right"
+            positionVertically="top"
+             handleClick={handleLogout}>
+            <span className="material-icons">logout</span>
+          </FabButton>
+        </Container>
     </>
   );
 }

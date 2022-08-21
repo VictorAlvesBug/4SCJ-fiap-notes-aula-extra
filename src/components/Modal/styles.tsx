@@ -11,11 +11,11 @@ const fadeIn = keyframes`
 
 const showInCard = keyframes`
   0% {
-    transform: scale(0) rotate(180deg);
+    transform: scale(0);
     
   }
   100% {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
     
   }
 `;

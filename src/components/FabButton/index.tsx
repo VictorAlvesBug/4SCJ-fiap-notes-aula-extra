@@ -3,11 +3,17 @@ import { FabButtonStyled } from "./styles";
 interface FBProps {
   children: React.ReactNode;
   handleClick: () => void;
-  position: string
+  positionHorizontally: string
+  positionVertically: string
 }
 
-function FabButton({ children, handleClick, position }: FBProps) {
-  return <FabButtonStyled position={position} onClick={handleClick}><p>{children}</p></FabButtonStyled>;
+function FabButton({ children, handleClick, positionHorizontally, positionVertically }: FBProps) {
+  return <FabButtonStyled 
+    positionHorizontally={positionHorizontally} 
+    positionVertically={positionVertically} 
+    onClick={handleClick}>
+      <p>{children}</p>
+      </FabButtonStyled>;
 }
 
 export default FabButton;
