@@ -20,6 +20,7 @@ function Home() {
   const [noteToEdit, setNoteToEdit] = useState<Note>();
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [notes, setNotes] = useState<Note[]>([] as Note[]);
+  const [notesToShow, setNotesToShow] = useState<Note[]>([] as Note[]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ function Home() {
       const response = await NotesService.getNotes();
 
       setNotes(response.data);
+      setNotesToShow(response.data);
       setLoading(false);
     })();
   }, []);
@@ -41,7 +43,14 @@ function Home() {
     (values: FormValueState, actions: FormikHelpers<FormValueState>) => {
       (async () => {
         const response = await NotesService.postNote(values);
-        setNotes((prevState) => [...prevState, response.data]);
+
+        const callbackSetNotes = (prevState: Note[]) => [
+          ...prevState,
+          response.data,
+        ];
+
+        setNotes(callbackSetNotes);
+        setNotesToShow(callbackSetNotes);
 
         actions.setSubmitting(false);
         setShowModal(false);
@@ -56,7 +65,8 @@ function Home() {
     (values: FormValueState, actions: FormikHelpers<FormValueState>) => {
       (async () => {
         await NotesService.putNote(values);
-        setNotes((prevState) =>
+
+        const callbackSetNotes = (prevState: Note[]) =>
           prevState.map((note) => {
             if (note.id === values.id) {
               return {
@@ -66,8 +76,10 @@ function Home() {
               };
             }
             return note;
-          })
-        );
+          });
+
+        setNotes(callbackSetNotes);
+        setNotesToShow(callbackSetNotes);
 
         actions.setSubmitting(false);
         setShowModal(false);
@@ -88,7 +100,12 @@ function Home() {
     (async () => {
       if (confirm(`Deseja remover a nota "${text}" permanentemente?`)) {
         await NotesService.deleteNote({ id });
-        setNotes((prevState) => prevState.filter((note) => note.id !== id));
+
+        const callbackSetNotes = (prevState: Note[]) =>
+          prevState.filter((note) => note.id !== id);
+
+        setNotes(callbackSetNotes);
+        setNotesToShow(callbackSetNotes);
       }
     })();
   }, []);
@@ -96,7 +113,7 @@ function Home() {
   // Função de callback para ordenar as notas de acordo com a ordem selecionada.
   const sortNotes = useCallback((selectedSortOption: number) => {
     (async () => {
-      setNotes((prevState) => {
+      const callbackSetNotes = (prevState: Note[]) => {
         switch (selectedSortOption) {
           case sortOption.alphaAZ:
             prevState.sort((noteA, noteB) => {
@@ -134,10 +151,13 @@ function Home() {
             break;
         }
 
-        prevState = prevState.map((note) => note)
+        prevState = prevState.map((note) => note);
 
         return prevState;
-      });
+      };
+
+      setNotes(callbackSetNotes);
+      setNotesToShow(callbackSetNotes);
     })();
   }, []);
 
@@ -147,6 +167,20 @@ function Home() {
   useEffect(() => {
     if (!authenticated) navigate('/');
   }, [authenticated]);
+
+  // Função que será executado ao filtar as notas por texto
+  const filterNotes = useCallback(
+    (event: React.FormEvent<Element>) => {
+      const textoBuscado = event.target.value;
+
+      const filteredListNotes = notes.filter((note) =>
+        note.text.toLowerCase().includes(textoBuscado.toLowerCase())
+      );
+
+      setNotesToShow(filteredListNotes);
+    },
+    [notes]
+  );
 
   // Caso esteja carregando, exibe animação de Spinner do Loading
   // Caso o modal esteja aberto, exibe o modal passando a função de fechar modal
@@ -175,35 +209,36 @@ function Home() {
         </Modal>
       )}
       <Container>
-          <Header handleSort={sortNotes} />
-          <div className="card-list">
-      {notes.map((note) => (
-        <CardNote
-        key={note.id}
-        handleEdit={openModalWithNoteToEdit}
-        handleDelete={deleteNote}
-        note={note}
-        ></CardNote>
-        ))}
+        <Header handleSort={sortNotes} handleTextType={filterNotes} />
+        <div className="card-list">
+          {notesToShow.map((note) => (
+            <CardNote
+              key={note.id}
+              handleEdit={openModalWithNoteToEdit}
+              handleDelete={deleteNote}
+              note={note}
+            ></CardNote>
+          ))}
         </div>
-          <FabButton
-            positionHorizontally="left"
-            positionVertically="top"
-            handleClick={() => {
-              setShowModal(true);
-              setNoteToEdit(undefined);
-              setIsEditingNote(false);
-            }}
-          >
-            +
-          </FabButton>
-          <FabButton
-            positionHorizontally="right"
-            positionVertically="top"
-             handleClick={handleLogout}>
-            <span className="material-icons">logout</span>
-          </FabButton>
-        </Container>
+        <FabButton
+          positionHorizontally="left"
+          positionVertically="top"
+          handleClick={() => {
+            setShowModal(true);
+            setNoteToEdit(undefined);
+            setIsEditingNote(false);
+          }}
+        >
+          +
+        </FabButton>
+        <FabButton
+          positionHorizontally="right"
+          positionVertically="top"
+          handleClick={handleLogout}
+        >
+          <span className="material-icons">logout</span>
+        </FabButton>
+      </Container>
     </>
   );
 }

@@ -14,7 +14,7 @@ export const SortOptionStyled = styled.div`
   border: 1px solid transparent;
 
   :hover {
-  background-color: #222;
+    background-color: #444;
   }
 
 &.selected-forward,

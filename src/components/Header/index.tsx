@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import SortOption from '../SortOption';
+import FilterInput from '../FilterInput';
 import { HeaderStyled } from './styles';
 
 export const sortOption = {
@@ -12,9 +13,10 @@ export const sortOption = {
 
 interface HeaderProps {
   handleSort: (selectedSort: number) => void;
+  handleTextType: React.FormEventHandler;
 }
 
-function Header({ handleSort }: HeaderProps) {
+function Header({ handleSort, handleTextType }: HeaderProps) {
   const [sort, setSort] = useState(sortOption.default);
 
   const selectSortOption = useCallback((selectedSortOption: number) => {
@@ -71,6 +73,8 @@ function Header({ handleSort }: HeaderProps) {
       >
         <span className="material-icons">error_outline</span>
       </SortOption>
+
+        <FilterInput handleTextType={handleTextType} placeholder="Buscar notas" />
 
     </HeaderStyled>
   );
