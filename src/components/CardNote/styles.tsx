@@ -83,18 +83,14 @@ export const Container = styled.article`
     width: fit-content;
   }
 
+  width: 100%;
+
+  @media (min-width: 576px) {
+    width: calc((100% - 20px * 3) / 2);
+  }
   
-  width: calc((100% - 20px * 5)/4);
-
-@media (max-width: 1040px) {
-  width: calc((100% - 20px * 4)/3);
-}
-
-@media (max-width: 790px) {
-  width: calc((100% - 20px * 3)/2);
-}
-
-@media (max-width: 530px) {
-  width: calc(100% - 20px * 2);
-}
+  @media (min-width: 768px) {
+    width: calc((100% - 20px * 4) / 3);
+  }
+  
 `;

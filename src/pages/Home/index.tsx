@@ -170,7 +170,7 @@ function Home() {
 
   // Função que será executado ao filtar as notas por texto
   const filterNotes = useCallback(
-    (event: React.FormEvent<Element>) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const textoBuscado = event.target.value;
 
       const filteredListNotes = notes.filter((note) =>
@@ -208,18 +208,8 @@ function Home() {
           />
         </Modal>
       )}
-      <Container>
-        <Header handleSort={sortNotes} handleTextType={filterNotes} />
-        <div className="card-list">
-          {notesToShow.map((note) => (
-            <CardNote
-              key={note.id}
-              handleEdit={openModalWithNoteToEdit}
-              handleDelete={deleteNote}
-              note={note}
-            ></CardNote>
-          ))}
-        </div>
+      <Header handleSort={sortNotes} handleTextType={filterNotes}>
+        
         <FabButton
           positionHorizontally="left"
           positionVertically="top"
@@ -238,6 +228,19 @@ function Home() {
         >
           <span className="material-icons">logout</span>
         </FabButton>
+      </Header>
+      <Container>
+        <div className="card-list">
+          {notesToShow.map((note) => (
+            <CardNote
+              key={note.id}
+              handleEdit={openModalWithNoteToEdit}
+              handleDelete={deleteNote}
+              note={note}
+            ></CardNote>
+          ))}
+        </div>
+        
       </Container>
     </>
   );

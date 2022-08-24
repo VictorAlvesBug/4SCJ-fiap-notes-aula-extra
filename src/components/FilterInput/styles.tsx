@@ -13,6 +13,8 @@ export const FilterInputStyled = styled.input`
   cursor: pointer;
   user-select: none;
   border: 1px solid transparent;
+  margin-right: 50px;
+  overflow: auto;
 
   :hover {
     background-color: #444;

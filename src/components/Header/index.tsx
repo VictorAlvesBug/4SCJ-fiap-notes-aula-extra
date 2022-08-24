@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import SortOption from '../SortOption';
 import FilterInput from '../FilterInput';
 import { HeaderStyled } from './styles';
@@ -14,9 +14,10 @@ export const sortOption = {
 interface HeaderProps {
   handleSort: (selectedSort: number) => void;
   handleTextType: React.FormEventHandler;
+  children: React.ReactNode;
 }
 
-function Header({ handleSort, handleTextType }: HeaderProps) {
+function Header({ handleSort, handleTextType, children }: HeaderProps) {
   const [sort, setSort] = useState(sortOption.default);
 
   const selectSortOption = useCallback((selectedSortOption: number) => {
@@ -56,6 +57,7 @@ function Header({ handleSort, handleTextType }: HeaderProps) {
 
   return (
     <HeaderStyled>
+      {children}
       <SortOption
         selected={selectedAlpha()}
         handleClick={() => {
