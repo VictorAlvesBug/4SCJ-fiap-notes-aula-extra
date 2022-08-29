@@ -84,13 +84,17 @@ export const Container = styled.article`
   }
 
   width: 100%;
+  max-width: 350px;
+  margin: auto;
 
   @media (min-width: 576px) {
     width: calc((100% - 20px * 3) / 2);
+    margin: initial;
   }
   
   @media (min-width: 768px) {
     width: calc((100% - 20px * 4) / 3);
+    margin: initial;
   }
   
 `;
